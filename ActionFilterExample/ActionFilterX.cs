@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Routing;
 
 namespace ActionFilterExample
 {
@@ -16,6 +18,7 @@ namespace ActionFilterExample
             strWriter.WriteLine(filterContext.ToString() + " - " + DateTime.Now.ToString());
             strWriter.Close();
             base.OnActionExecuting(filterContext);
+            Log(filterContext.ToString(), filterContext.RouteData);
         }
 
         //Action' daki islemler bittikten sonra buraya gelir.
@@ -25,6 +28,7 @@ namespace ActionFilterExample
             strWriter.WriteLine(filterContext.ToString() + " - " +DateTime.Now.ToString());
             strWriter.Close();
             base.OnActionExecuted(filterContext);
+            Log(filterContext.ToString(), filterContext.RouteData);
         }
 
         //Action' daki islemler bittiginde buraya gelir. OnActionExecuted bu metoddan onceliklidir.
@@ -34,6 +38,7 @@ namespace ActionFilterExample
             strWriter.WriteLine(filterContext.ToString() + " - " + DateTime.Now.ToString());
             strWriter.Close();
             base.OnResultExecuting(filterContext);
+            Log(filterContext.ToString(), filterContext.RouteData);
         }
 
         //Action' daki islemler bittiğinde buraya gelir.  OnResultExecuting bu metoddan onceliklidir.
@@ -43,6 +48,15 @@ namespace ActionFilterExample
             strWriter.WriteLine(filterContext.ToString() + " - " + DateTime.Now.ToString());
             strWriter.Close();
             base.OnResultExecuted(filterContext);
+            Log(filterContext.ToString(), filterContext.RouteData);
+        }
+
+        private void Log(string methodName, RouteData routeData)
+        {
+            var controllerName = routeData.Values["controller"];
+            var actionName = routeData.Values["action"];
+            var message = String.Format("{0} controller:{1} action:{2}", methodName, controllerName, actionName);
+            Debug.WriteLine(message, "Action Filter Log");
         }
     }
 }
